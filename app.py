@@ -90,7 +90,7 @@ def main():
             with col2:
                 st.info(f"Current Bus Location: ({bus_lat}, {bus_lon})")
                 time.sleep(2)  # Simulate movement
-                st.experimental_rerun()
+                st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
