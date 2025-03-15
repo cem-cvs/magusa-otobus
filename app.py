@@ -102,7 +102,7 @@ def main():
                 data=[{"lat": bus_lat, "lon": bus_lon}],
                 get_position=["lon", "lat"],
                 get_color=[255, 0, 0, 160],
-                get_radius=200,
+                get_radius=50,
             )
 
             # Render Pydeck Map
