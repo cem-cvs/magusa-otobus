@@ -1,5 +1,8 @@
 from models.base import engine, Base
-from models.landmarks import Landmark
 
 def init_database():
-    Base.metadata.create_all(bind=engine)
+    print("Initializing database on Neon PostgreSQL...")
+    Base.metadata.create_all(bind=engine)  # Create tables if they don't exist
+
+if __name__ == "__main__":
+    init_database()
