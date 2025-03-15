@@ -103,36 +103,41 @@ def main():
         with tab4:
             st.subheader("Live Bus Tracking")
         
-            # Fetch current bus location
+            # Fetch updated bus location
             bus_lat, bus_lon = update_bus_position()
         
-            # Keep the map static by only updating the bus marker
+            # Initialize the map only once
             if "bus_map" not in st.session_state:
                 st.session_state.bus_map = folium.Map(
                     location=[35.123, 33.942],  # Static center of the map
                     zoom_start=13
                 )
         
-            # Remove previous marker before adding a new one
-            for key in list(st.session_state.keys()):
-                if key.startswith("bus_marker_"):
-                    del st.session_state[key]
-        
-            # Add updated bus marker
-            bus_marker_key = f"bus_marker_{bus_lat}_{bus_lon}"
-            if bus_marker_key not in st.session_state:
-                st.session_state[bus_marker_key] = folium.Marker(
+                # Create a marker for the bus
+                st.session_state.bus_marker = folium.Marker(
                     location=[bus_lat, bus_lon],
                     tooltip="Bus Location",
                     icon=folium.Icon(color="red")
                 )
-                st.session_state[bus_marker_key].add_to(st.session_state.bus_map)
+                st.session_state.bus_marker.add_to(st.session_state.bus_map)
         
             # Display the static map
-            st_folium(st.session_state.bus_map, width=800)
+            map_placeholder = st_folium(st.session_state.bus_map, width=800)
         
-            # Wait a moment, then update the marker (without refreshing the map)
+            # Inject JavaScript to update the marker dynamically
+            js_code = f"""
+                <script>
+                    var marker = L.marker([{bus_lat}, {bus_lon}]).addTo(window.map);
+                    setInterval(function() {{
+                        marker.setLatLng([{bus_lat}, {bus_lon}]);
+                    }}, 2000);
+                </script>
+            """
+            st.components.v1.html(js_code, height=0)
+        
+            # Update bus position every 2 seconds without refreshing the map
             time.sleep(2)
+            st.session_state.bus_marker.location = [bus_lat, bus_lon]
             st.rerun()
         
     except Exception as e:
