@@ -1,4 +1,5 @@
 import streamlit as st
+import pydeck as pdk
 import folium
 from streamlit_folium import st_folium
 from sqlalchemy.orm import Session
@@ -96,51 +97,37 @@ def main():
                         st.write(landmark["description"])
                         st.write(f"📍 Location: {landmark['latitude']}, {landmark['longitude']}")
 
-        # 🔵 Live Bus Tracking (Keep the Map Static, Only Move the Marker)
-        with tab4:
+        with st.tabs(["Live Bus Tracking"])[0]:
             st.subheader("Live Bus Tracking")
-
-            # Fetch updated bus location
+        
+        while True:
             bus_lat, bus_lon = update_bus_position()
-
-            # Initialize the map only once
-            if "bus_map" not in st.session_state:
-                st.session_state.bus_map = folium.Map(
-                    location=[35.123, 33.942],  # Static center of the map
-                    zoom_start=13
-                )
-
-                # Store the bus marker in session state
-                st.session_state.bus_marker = folium.Marker(
-                    location=[bus_lat, bus_lon],
-                    tooltip="Bus Location",
-                    icon=folium.Icon(color="red")
-                )
-                st.session_state.bus_marker.add_to(st.session_state.bus_map)
-
-             # Display the map once (doesn't refresh)
-            map_placeholder = st_folium(st.session_state.bus_map, width=800)
-
-            # Inject JavaScript to move only the marker dynamically
-            js_code = f"""
-                <script>
-                    setTimeout(function() {{
-                        var marker = L.marker([{bus_lat}, {bus_lon}]).addTo(window.map);
-                        marker.setLatLng([{bus_lat}, {bus_lon}]); 
-                    }}, 1000);
-                </script>
-            """
-            st.components.v1.html(js_code, height=0)
-
-            # Update only the marker location, not the whole map
-            # st.session_state.bus_marker.location = [bus_lat, bus_lon]
-
-            # Display the map without reloading
-            # st_folium(st.session_state.bus_map, width=800)
-
-            # Wait before updating position
+    
+            # Define Pydeck layer
+            layer = pdk.Layer(
+                "ScatterplotLayer",
+                data=[{"lat": bus_lat, "lon": bus_lon}],
+                get_position=["lon", "lat"],
+                get_color=[255, 0, 0, 160],
+                get_radius=100,
+            )
+    
+            # Render Pydeck Map
+            map = pdk.Deck(
+                map_style="mapbox://styles/mapbox/streets-v11",
+                initial_view_state=pdk.ViewState(
+                    latitude=35.123,
+                    longitude=33.942,
+                    zoom=13,
+                    pitch=50,
+                ),
+                layers=[layer],
+            )
+    
+            st.pydeck_chart(map)
+    
+            # Update position every 2 seconds
             time.sleep(2)
-            # st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
