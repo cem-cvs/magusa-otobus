@@ -98,15 +98,18 @@ def main():
 
             # Define Pydeck layer (only updates bus marker)
             layer = pdk.Layer(
-                "TextLayer",
-                data=[{"lat": bus_lat, "lon": bus_lon, "text": "🚍"}],
+                "ScatterplotLayer",
+                data=[{
+                    "lat": bus_lat, "lon": bus_lon,
+                    "direction": 90  # Set the bus direction dynamically if available
+                }],
                 get_position=["lon", "lat"],
-                get_text="text",
-                get_size=24,  # Adjust size of the bus emoji
-                get_color=[255, 255, 255],  # White text color
-                get_angle=0,
-                background=True,  # Helps with visibility
+                get_color=[255, 0, 0, 160],
+                get_radius=200,
+                pickable=True,
+                auto_highlight=True,
             )
+
             # Render Pydeck Map
             map = pdk.Deck(
                 map_style="mapbox://styles/mapbox/streets-v11",
