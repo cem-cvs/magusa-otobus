@@ -35,7 +35,7 @@ if "bus_position_index" not in st.session_state:
     st.session_state.bus_position_index = 0
 
 def update_bus_position():
-    """Simulate real-time bus movement."""
+    """Update only the bus marker's position without reloading the map."""
     st.session_state.bus_position_index = (st.session_state.bus_position_index + 1) % len(BUS_ROUTE)
     return BUS_ROUTE[st.session_state.bus_position_index]
 
@@ -102,19 +102,41 @@ def main():
         # 🔵 Live Bus Tracking
         with tab4:
             st.subheader("Live Bus Tracking")
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                bus_map = create_landmark_map(FAMAGUSTA_CENTER["latitude"], FAMAGUSTA_CENTER["longitude"])
-                bus_lat, bus_lon = update_bus_position()
-                folium.Marker((bus_lat, bus_lon), tooltip="Bus Location", icon=folium.Icon(color='red')).add_to(bus_map)
-                st_folium(bus_map, width=800)
-            with col2:
-                st.info(f"Current Bus Location: ({bus_lat}, {bus_lon})")
-                time.sleep(2)  # Simulate movement
-                st.rerun()
-
-    except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+        
+            # Fetch current bus location
+            bus_lat, bus_lon = update_bus_position()
+        
+            # Keep the map static by only updating the bus marker
+            if "bus_map" not in st.session_state:
+                st.session_state.bus_map = folium.Map(
+                    location=[35.123, 33.942],  # Static center of the map
+                    zoom_start=13
+                )
+        
+            # Remove previous marker before adding a new one
+            for key in list(st.session_state.keys()):
+                if key.startswith("bus_marker_"):
+                    del st.session_state[key]
+        
+            # Add updated bus marker
+            bus_marker_key = f"bus_marker_{bus_lat}_{bus_lon}"
+            if bus_marker_key not in st.session_state:
+                st.session_state[bus_marker_key] = folium.Marker(
+                    location=[bus_lat, bus_lon],
+                    tooltip="Bus Location",
+                    icon=folium.Icon(color="red")
+                )
+                st.session_state[bus_marker_key].add_to(st.session_state.bus_map)
+        
+            # Display the static map
+            st_folium(st.session_state.bus_map, width=800)
+        
+            # Wait a moment, then update the marker (without refreshing the map)
+            time.sleep(2)
+            st.rerun()
+        
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
             
 if __name__ == "__main__":
     main()
