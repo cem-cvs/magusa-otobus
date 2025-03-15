@@ -17,9 +17,6 @@ from utils.filter_utils import filter_landmarks_by_distance, filter_landmarks_by
 from utils.route_utils import create_route_planner, add_route_to_map
 from database.init_db import init_database
 
-# Initialize database on startup
-init_database()
-
 # 🔵 Main Streamlit App
 def main():
     st.set_page_config(
@@ -81,6 +78,9 @@ def main():
         st.error("Username or password is incorrect")
     elif authentication_status is None:
         st.warning("Please enter your username and password")
+
+# Initialize database on startup
+init_database()
 
 # 🔵 Mock Bus Movement (Simulating real-time tracking)
 BUS_ROUTE = [
