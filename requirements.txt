@@ -1,1 +1,1 @@
-pip install folium sqlalchemy pyyaml
+pip install --upgrade pip
