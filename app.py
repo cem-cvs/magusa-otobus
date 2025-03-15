@@ -20,42 +20,6 @@ from database.init_db import init_database
 # Initialize database on startup
 init_database()
 
-# 🔵 Mock Bus Movement (Simulating real-time tracking)
-BUS_ROUTE = [
-    (35.1234, 33.9456), (35.1240, 33.9460), (35.1245, 33.9470),
-    (35.1250, 33.9480), (35.1255, 33.9490), (35.1260, 33.9500)
-]
-if "bus_position_index" not in st.session_state:
-    st.session_state.bus_position_index = 0
-
-def update_bus_position():
-    """Simulate real-time bus movement."""
-    st.session_state.bus_position_index = (st.session_state.bus_position_index + 1) % len(BUS_ROUTE)
-    return BUS_ROUTE[st.session_state.bus_position_index]
-
-# 🔵 Authentication Setup
-with open("config.yaml") as file:
-    config = yaml.load(file, Loader=SafeLoader)
-
-authenticator = Authenticate(
-    config["credentials"],
-    config["cookie"],
-    config.get("key", "default_value"),
-    config.get("expiry_days", "default_value")
-)
-
-# 🔵 Fetch Landmarks with Caching
-def get_landmarks(db: Session, search_term: str = "", limit: int = 50) -> list:
-    """Fetch landmarks with search filter and limit results."""
-    query = db.query(Landmark)
-    if search_term:
-        search = f"%{search_term.lower()}%"
-        query = query.filter(
-            (Landmark.name.ilike(search)) | 
-            (Landmark.description.ilike(search))
-        )
-    return [landmark.to_dict() for landmark in query.limit(limit).all()]
-
 # 🔵 Main Streamlit App
 def main():
     st.set_page_config(
@@ -117,6 +81,42 @@ def main():
         st.error("Username or password is incorrect")
     elif authentication_status is None:
         st.warning("Please enter your username and password")
+
+# 🔵 Mock Bus Movement (Simulating real-time tracking)
+BUS_ROUTE = [
+    (35.1234, 33.9456), (35.1240, 33.9460), (35.1245, 33.9470),
+    (35.1250, 33.9480), (35.1255, 33.9490), (35.1260, 33.9500)
+]
+if "bus_position_index" not in st.session_state:
+    st.session_state.bus_position_index = 0
+
+def update_bus_position():
+    """Simulate real-time bus movement."""
+    st.session_state.bus_position_index = (st.session_state.bus_position_index + 1) % len(BUS_ROUTE)
+    return BUS_ROUTE[st.session_state.bus_position_index]
+
+# 🔵 Authentication Setup
+with open("config.yaml") as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = Authenticate(
+    config["credentials"],
+    config["cookie"],
+    config.get("key", "default_value"),
+    config.get("expiry_days", "default_value")
+)
+
+# 🔵 Fetch Landmarks with Caching
+def get_landmarks(db: Session, search_term: str = "", limit: int = 50) -> list:
+    """Fetch landmarks with search filter and limit results."""
+    query = db.query(Landmark)
+    if search_term:
+        search = f"%{search_term.lower()}%"
+        query = query.filter(
+            (Landmark.name.ilike(search)) | 
+            (Landmark.description.ilike(search))
+        )
+    return [landmark.to_dict() for landmark in query.limit(limit).all()]
 
 if __name__ == "__main__":
     main()
