@@ -125,8 +125,8 @@ def main():
             st_folium(st.session_state.bus_map, width=800)
 
             # Wait before updating position
-            # time.sleep(2)
-            # st.rerun()
+            time.sleep(2)
+            st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
