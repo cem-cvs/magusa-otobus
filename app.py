@@ -41,7 +41,7 @@ authenticator = Authenticate(
     config["credentials"],
     config["cookie"],
     config.get("key", "default_value"),
-    config["expiry_days"]
+    config.get("expiry_days", "default_value")
 )
 
 # 🔵 Fetch Landmarks with Caching
