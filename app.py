@@ -75,7 +75,7 @@ def main():
     """, unsafe_allow_html=True)
 
     # 🔵 Authentication
-    name, authentication_status, username = authenticator.login("Login", location="sidebar")
+    name, authentication_status, username = authenticator.login("Login", location="main")
 
     if authentication_status:
         authenticator.logout("Logout", "sidebar")
