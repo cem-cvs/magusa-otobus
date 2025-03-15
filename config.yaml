@@ -1,0 +1,11 @@
+credentials:
+  usernames:
+    user1:
+      name: "John Doe"
+      password: "hashed_password"
+    user2:
+      name: "Jane Smith"
+      password: "hashed_password"
+cookie:
+  expiry_days: 30
+  key: "your_secret_key"
