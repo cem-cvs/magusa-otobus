@@ -118,15 +118,29 @@ def main():
                 )
                 st.session_state.bus_marker.add_to(st.session_state.bus_map)
 
+             # Display the map once (doesn't refresh)
+            map_placeholder = st_folium(st.session_state.bus_map, width=800)
+
+            # Inject JavaScript to move only the marker dynamically
+            js_code = f"""
+                <script>
+                    setTimeout(function() {{
+                        var marker = L.marker([{bus_lat}, {bus_lon}]).addTo(window.map);
+                        marker.setLatLng([{bus_lat}, {bus_lon}]); 
+                    }}, 1000);
+                </script>
+            """
+            st.components.v1.html(js_code, height=0)
+
             # Update only the marker location, not the whole map
-            st.session_state.bus_marker.location = [bus_lat, bus_lon]
+            # st.session_state.bus_marker.location = [bus_lat, bus_lon]
 
             # Display the map without reloading
-            st_folium(st.session_state.bus_map, width=800)
+            # st_folium(st.session_state.bus_map, width=800)
 
             # Wait before updating position
             time.sleep(2)
-            st.rerun()
+            # st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
