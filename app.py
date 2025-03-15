@@ -84,7 +84,21 @@ def main():
             st.session_state.landmarks = get_landmarks(db)
 
         landmarks = st.session_state.landmarks
-
+        with tab1:
+            st.subheader("Landmarks")
+        
+            # Fetch data
+            db = next(get_db())
+            landmarks = get_landmarks(db)
+        
+            if not landmarks:
+                st.warning("No landmarks found in the database!")
+            else:
+                for landmark in landmarks:
+                    with st.expander(landmark["name"]):
+                        st.write(landmark["description"])
+                        st.write(f"📍 Location: {landmark['latitude']}, {landmark['longitude']}")
+                        
         # 🔵 Live Bus Tracking
         with tab4:
             st.subheader("Live Bus Tracking")
