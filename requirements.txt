@@ -5,3 +5,4 @@ sqlalchemy
 pyyaml 
 streamlit-authenticator
 geopy
+psycopg2-binary
