@@ -1,10 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-DATABASE_URL = "sqlite:///famagusta.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://famagustadb_owner:npg_zeMv72jOIgSy@ep-muddy-brook-abntf4h4-pooler.eu-west-2.aws.neon.tech/famagusa_db?sslmode=require"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# Create Database Engine
+engine = create_engine(DATABASE_URL)
+
+# Create Session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base class for models
 Base = declarative_base()
 
 def get_db():
