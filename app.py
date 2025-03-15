@@ -135,8 +135,8 @@ def main():
             time.sleep(2)
             st.rerun()
         
-            except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
             
 if __name__ == "__main__":
     main()
