@@ -50,6 +50,13 @@ def get_landmarks(db: Session, search_term: str = "", limit: int = 50) -> list:
             (Landmark.description.ilike(search))
         )
     return [landmark.to_dict() for landmark in query.limit(limit).all()]
+     # Debugging: Print landmarks to Streamlit
+    st.write("Fetched Landmarks:", landmarks)
+
+    if not landmarks:
+        st.warning("No landmarks found in the database!")
+
+    return [landmark.to_dict() for landmark in landmarks]
 
 # 🔵 Main Streamlit App
 def main():
