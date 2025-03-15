@@ -1,6 +1,5 @@
 import streamlit as st
 import pydeck as pdk
-import folium
 from streamlit_folium import st_folium
 from sqlalchemy.orm import Session
 import time
@@ -51,12 +50,6 @@ def get_landmarks(db: Session, search_term: str = "", limit: int = 50) -> list:
         )
     landmarks = query.limit(limit).all()
 
-    # Debugging: Print landmarks to Streamlit
-    st.write("Fetched Landmarks:", landmarks)
-
-    if not landmarks:
-        st.warning("No landmarks found in the database!")
-
     return [landmark.to_dict() for landmark in landmarks]
 
 # 🔵 Main Streamlit App
@@ -97,21 +90,21 @@ def main():
                         st.write(landmark["description"])
                         st.write(f"📍 Location: {landmark['latitude']}, {landmark['longitude']}")
 
-        with st.tabs(["Live Bus Tracking"])[0]:
+        # 🔵 Live Bus Tracking (Updated Pydeck Version)
+        with tab4:
             st.subheader("Live Bus Tracking")
-        
-        while True:
+
             bus_lat, bus_lon = update_bus_position()
-    
-            # Define Pydeck layer
+
+            # Define Pydeck layer (only updates bus marker)
             layer = pdk.Layer(
                 "ScatterplotLayer",
                 data=[{"lat": bus_lat, "lon": bus_lon}],
                 get_position=["lon", "lat"],
                 get_color=[255, 0, 0, 160],
-                get_radius=100,
+                get_radius=200,
             )
-    
+
             # Render Pydeck Map
             map = pdk.Deck(
                 map_style="mapbox://styles/mapbox/streets-v11",
@@ -123,11 +116,12 @@ def main():
                 ),
                 layers=[layer],
             )
-    
+
             st.pydeck_chart(map)
-    
-            # Update position every 2 seconds
+
+            # Update the bus location every 2 seconds
             time.sleep(2)
+            st.rerun()  # Re-run the script, but only the marker updates!
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
