@@ -126,7 +126,7 @@ def main():
 
             # Wait before updating position
             time.sleep(2)
-            st.rerun()
+            # st.rerun()
 
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
