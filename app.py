@@ -38,20 +38,6 @@ def update_bus_position():
     st.session_state.bus_position_index = (st.session_state.bus_position_index + 1) % len(BUS_ROUTE)
     return BUS_ROUTE[st.session_state.bus_position_index]
 
-# 🔵 Fetch Landmarks with Caching
-def get_landmarks(db: Session, search_term: str = "", limit: int = 50) -> list:
-    """Fetch landmarks with search filter and limit results."""
-    query = db.query(Landmark)
-    if search_term:
-        search = f"%{search_term.lower()}%"
-        query = query.filter(
-            (Landmark.name.ilike(search)) | 
-            (Landmark.description.ilike(search))
-        )
-    landmarks = query.limit(limit).all()
-
-    return [landmark.to_dict() for landmark in landmarks]
-
 # 🔵 Main Streamlit App
 def main():
     # 🔵 Dark Mode Toggle
@@ -69,15 +55,6 @@ def main():
     tab3, tab2, tab1, tab4 = st.tabs(["Bus Schedules", "Route Planner", "Landmarks", "Live Bus Tracking"])
 
     try:
-        # Fetch Database Session
-        db = next(get_db())
-
-        # Cache landmarks in session state
-        if "landmarks" not in st.session_state:
-            st.session_state.landmarks = get_landmarks(db)
-
-        landmarks = st.session_state.landmarks
-
         # 🔵 Landmarks Tab
         with tab1:
             st.subheader("Landmarks")
