@@ -132,7 +132,7 @@ def main():
                 }],
                 get_position=["lon", "lat"],
                 get_color=[255, 0, 0, 160],
-                get_radius=50,
+                get_radius=100,
                 pickable=True,
                 auto_highlight=True,
             )
