@@ -4,3 +4,4 @@ streamlit-folium
 sqlalchemy 
 pyyaml 
 streamlit-authenticator
+geopy
