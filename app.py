@@ -40,7 +40,7 @@ with open("config.yaml") as file:
 authenticator = Authenticate(
     config["credentials"],
     config["cookie"],
-    config["key"],
+    config.get("key", "default_value"),
     config["expiry_days"]
 )
 
