@@ -108,10 +108,21 @@ def main():
         # 🔵 Landmarks Tab
         with tab1:
             st.subheader("Landmarks")
-
+            
             if not landmarks:
                 st.warning("No landmarks found in the database!")
             else:
+                landmark_map = folium.Map(location=[35.123, 33.942], zoom_start=13)
+        
+                for landmark in landmarks:
+                    folium.Marker(
+                        location=[landmark["latitude"], landmark["longitude"]],
+                        popup=f"{landmark['name']}: {landmark['description']}",
+                        icon=folium.Icon(color="blue", icon="info-sign")
+                    ).add_to(landmark_map)
+        
+                folium_static(landmark_map)  # Display the map in Streamlit
+        
                 for landmark in landmarks:
                     with st.expander(landmark["name"]):
                         st.write(landmark["description"])
