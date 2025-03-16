@@ -125,16 +125,23 @@ def main():
 
             # Define Pydeck layer (only updates bus marker)
             layer = pdk.Layer(
-                "ScatterplotLayer",
+                "IconLayer",
                 data=[{
-                    "lat": bus_lat, "lon": bus_lon,
-                    "direction": 90  # Set the bus direction dynamically if available
+                    "lat": bus_lat,
+                    "lon": bus_lon,
+                    "icon_data": {
+                        "url": "https://img.icons8.com/ios-filled/50/bus.png",
+                        "width": 50,
+                        "height": 50,
+                        "anchorY": 50
+                    },
+                    "direction": 90  # Set dynamically from GPS data
                 }],
                 get_position=["lon", "lat"],
-                get_color=[255, 0, 0, 160],
-                get_radius=100,
+                get_icon="icon_data",
+                get_size=4,
+                size_scale=10,
                 pickable=True,
-                auto_highlight=True,
             )
 
             # Render Pydeck Map
