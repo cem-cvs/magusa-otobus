@@ -3,6 +3,8 @@ import pydeck as pdk
 from streamlit_folium import st_folium
 from sqlalchemy.orm import Session
 import time
+import folium
+from streamlit_folium import folium_static
 
 from models.base import get_db, engine
 from models.landmarks import Landmark
