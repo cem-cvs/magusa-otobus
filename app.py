@@ -145,6 +145,7 @@ def main():
                     longitude=33.942,
                     zoom=13,
                     pitch=50,
+                    tooltip={"text": "{name}\n{address}"},
                 ),
                 layers=[layer],
             )
